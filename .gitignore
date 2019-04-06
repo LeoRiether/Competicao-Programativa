@@ -1,6 +1,9 @@
 # VSCode
 .vscode
 
+# Stuff
+input.txt
+
 # Prerequisites
 *.d
 
