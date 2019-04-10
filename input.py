@@ -3,6 +3,7 @@ import random
 def join(l):
   return str.join(' ', map(str, l))
 
-k = 200000
-print(k)
-print(join([ random.randint(1,1000) for _ in range(k) ]))
+n = 2000
+w = 200
+print(n, w)
+print(join([ random.randint(1,w) for _ in range(n*2) ]))
