@@ -14,7 +14,7 @@ int n; // Número de objetos
 int W; // Capacidade total da mochila
 int c = 0; // Conta quantas vezes a função é chamada
 
-Objeto dp(int id) {
+inline Objeto dp(int id) {
   c++;
   if (ans[id].w != 0) return ans[id]; // Pretty sure this is useless
 
@@ -34,11 +34,11 @@ Objeto dp(int id) {
     best.w += v[id].w;
     best.v += v[id].v;
   }
-  ans[id] = best;
+  // ans[id] = best;
   return best;
 }
 
-Objeto dp() {
+inline Objeto dp() {
   Objeto best{0,0}, aux{0,0};
   for (int i = 0; i < n; i++) {
     aux = dp(i);
