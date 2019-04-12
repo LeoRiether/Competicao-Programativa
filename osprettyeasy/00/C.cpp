@@ -21,8 +21,8 @@ int main() {
   int n; cin >> n;
 
   int shelves = 0;
-  shelves += ceil(a / 5.0);
-  shelves += ceil(b / 10.0);
+  shelves += ceil(a / 5.0); // (x+5-1)/5
+  shelves += ceil(b / 10.0); // (x+10-1)/10
 
   cout << (shelves <= n ? "YES" : "NO");
 
