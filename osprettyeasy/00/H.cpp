@@ -13,19 +13,7 @@ vector<int> cost, path;
 vector<int> tb;
 int n;
 
-ll minCost(int i) {
-  if (tb[i]) return tb[i];
-
-  
-}
-
-ll minCost() {
-  ll ans = minCost(0);
-  for (int i = 1; i < n; i++) {
-    ans = min(ans, minCost(i));
-  }
-  return ans;
-}
+// Floyd's cycle-detection algorithm
 
 int main() {
   ios_base::sync_with_stdio(false);
