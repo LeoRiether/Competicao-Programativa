@@ -3,6 +3,7 @@
 
 # Stuff
 input.txt
+/ignore
 
 # Prerequisites
 *.d
