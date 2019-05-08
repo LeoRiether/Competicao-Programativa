@@ -15,8 +15,13 @@ public:
     data = new T[w*h];
   }
 
-  T& operator()(int i, int j) {
-    return data[i*w + j];
+  T& operator()(int x, int y) {
+    int idx = y*w + x;
+    return data[idx];
+  }
+
+  bool withinBounds(int x, int y) {
+    return x >= 0 && x < w && y >= 0 && y < h;    
   }
 };
 
@@ -32,18 +37,22 @@ public:
     data.resize((w*h+7)/8);
   }
 
-  bool operator()(int i, int j) {
-    int idx = i*w+j;
+  bool operator()(int x, int y) {
+    int idx = y*w+x;
     return data[idx/8] & (1<<(idx%8));
   }
 
-  void operator()(int i, int j, bool v) {
-    int idx = i*w+j;
+  void operator()(int x, int y, bool v) {
+    int idx = y*w+x;
     if (v) {
-      data[idx/8] = data[idx/8] | (1<<(idx%8));
+      data[idx/8] |= (1<<(idx%8));
     } else {
-      data[idx/8] = data[idx/8] & ~(1<<(idx%8));
+      data[idx/8] &= ~(1<<(idx%8));
     }
+  }
+
+  bool withinBounds(int x, int y) {
+    return x >= 0 && x < w && y >= 0 && y < h;
   }
 };
 
@@ -51,20 +60,21 @@ std::vector<int> dx { 1,-1,0,0 };
 std::vector<int> dy { 0,0,1,-1 };
 
 template <typename T>
-inline int floodfillPoint(Map<T>& map, Map<bool>& visited, int iStart, int jStart) {
+inline int floodfillPoint(Map<T>& map, Map<bool>& visited, int xStart, int yStart) {
   std::queue<std::pair<int,int>> q;
-  q.emplace(iStart, jStart);
+  q.emplace(xStart, yStart);
+  visited(xStart, yStart, true);
 
-  int i, j;
+  int x, y;
   int vcount = 0;
   while (!q.empty()) {
-    std::tie(i, j) = q.front(); q.pop();
-    visited(i, j, true);
+    std::tie(x, y) = q.front(); q.pop();
     vcount++;
     for (int t = 0; t < 4; t++) {
-      int y = i + dy[t], x = j + dx[t];
-      if (map(y, x) == '$' && !visited(y, x)) {
-        q.emplace(y, x);
+      int x_ = x + dx[t], y_ = y + dy[t];
+      if (map.withinBounds(x_, y_) && map(x_, y_) == '$' && !visited(x_, y_)) {
+        visited(x_, y_, true);
+        q.emplace(x_, y_);
       }
     }
   }
@@ -72,15 +82,15 @@ inline int floodfillPoint(Map<T>& map, Map<bool>& visited, int iStart, int jStar
 }
 
 // Returns the number of pools of '$'
-// Also might be O(n^2)
+// Also might be O(n^4), but maybe not
 template <typename T>
 std::pair<int,int> floodfill(Map<T>& map) {
   Map<bool> visited(map.w, map.h);
 
   int pools = 0, poolCount = 0;
   for (int i = 0; i < map.h; i++) for (int j = 0; j < map.w; j++) {
-    if (map(i, j) == '$' && !visited(i, j)) {
-      poolCount += floodfillPoint(map, visited, i, j);
+    if (map(j, i) == '$' && !visited(j, i)) {
+      poolCount += floodfillPoint(map, visited, j, i);
       pools++;
     }
   }
@@ -93,14 +103,13 @@ void query() {
 
   Map<char> map(w, h);
 
-  for(int i = 0; i < w; i++) {
-    for(int j = 0; j < h; j++) {
-      std::cin >> map(i, j);
+  for(int i = 0; i < h; i++) {
+    for(int j = 0; j < w; j++) {
+      std::cin >> map(j, i);
     }
   }
 
-  int pools, poolCount;
-  std::tie(pools, poolCount) = floodfill(map);
+  auto [pools, poolCount] = floodfill(map);
 
   std::cout << pools << ' ' << poolCount << std::endl;
 }
