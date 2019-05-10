@@ -8,11 +8,6 @@ constexpr int oo = 0x3f3f3f3f;
 using adj_list_t = std::vector<std::vector<std::pair<int,int>>>;
 using dijkstra_queue_t = std::priority_queue<std::pair<int,int>, std::vector<std::pair<int,int>>, std::greater<std::pair<int,int>>>;
 
-// Also works, but the time complexity is higher
-// At least that is what I was told
-// using dijkstra_queue_t = std::queue<std::pair<int,int>>;
-// #define top front
-
 int dijkstra(const adj_list_t& adj, int v, int from, int to) {
   dijkstra_queue_t q;
   std::vector<int> dist(v+1, oo);
@@ -20,9 +15,10 @@ int dijkstra(const adj_list_t& adj, int v, int from, int to) {
   q.emplace(0, from);
 
   int d, n;
-  while (!q.empty()) {
+  int open = v;
+  while (!q.empty() && open > 0) {
     std::tie(d, n) = q.top(); q.pop();
-    if (dist[n] < d) continue;
+    if (dist[n] < d) continue; // Pretty sure this never happens because of the priority queue
 
     // Process every edge
     for (const auto e : adj[n]) {
@@ -30,6 +26,7 @@ int dijkstra(const adj_list_t& adj, int v, int from, int to) {
       if (dist[e.second] > dist[n] + e.first) {
         dist[e.second] = dist[n] + e.first; 
         q.emplace(dist[e.second], e.second);
+        open--;
       }
     }
   }
