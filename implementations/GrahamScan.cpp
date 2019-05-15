@@ -122,7 +122,7 @@ int main() {
   std::cout << ">-----------------------------------------------------------------<" << std::endl;
 
   // Calculate convex hull
-  // Hopefully g++ will do a move assignment here
+  // Hopefully g++ will do a return-value-optimization!
   pointStack_t chull = convexHull(points);
 
   // Print all convex hull points 
