@@ -32,7 +32,7 @@ void radixSort(vector<Node>::iterator beg, vector<Node>::iterator end) {
       for (const auto& n : b)
         *(beg++) = n;
 
-    buckets.assign(257, {});
+    buckets.assign(100005, {});
   }
 }
 
