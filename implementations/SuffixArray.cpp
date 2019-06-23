@@ -21,7 +21,7 @@ struct Node {
 };
 
 void radixSort(vector<Node>::iterator beg, vector<Node>::iterator end) {
-  vector<vector<Node>> buckets(257);
+  vector<vector<Node>> buckets(100005);
   auto beg_ = beg;
   for (int i = 1; i >= 0; i--) {
     for (beg = beg_; beg != end; beg++)
@@ -45,7 +45,7 @@ vector<int> buildSuffixArray(string& s) {
 
   // Build initial rankings
   for (int i = 0; i < n; i++) 
-    sa[i] = s[i] == '$' ? 0 : s[i]-'a'+1;
+    sa[i] = s[i];
 
   // Prefix doubling
   for (int k = 1; k < n; k <<= 1) {
