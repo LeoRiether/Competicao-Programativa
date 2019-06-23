@@ -45,7 +45,7 @@ vector<int> buildSuffixArray(string& s) {
 
   // Build initial rankings
   for (int i = 0; i < n; i++) 
-    sa[i] = s[i]-'a'+1;
+    sa[i] = s[i] == '$' ? 0 : s[i]-'a'+1;
 
   // Prefix doubling
   for (int k = 1; k < n; k <<= 1) {
