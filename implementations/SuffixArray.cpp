@@ -21,9 +21,9 @@ struct Node {
 };
 
 void radixSort(vector<Node>::iterator beg, vector<Node>::iterator end) {
-  vector<vector<Node>> buckets(100005);
   auto beg_ = beg;
   for (int i = 1; i >= 0; i--) {
+    vector<vector<Node>> buckets(100005);
     for (beg = beg_; beg != end; beg++)
       buckets[beg->get(i)].push_back(*beg);
 
@@ -31,8 +31,6 @@ void radixSort(vector<Node>::iterator beg, vector<Node>::iterator end) {
     for (const auto& b : buckets)
       for (const auto& n : b)
         *(beg++) = n;
-
-    buckets.assign(100005, {});
   }
 }
 
@@ -52,6 +50,7 @@ vector<int> buildSuffixArray(string& s) {
     // Build pair rankings
     for (int i = 0; i < n; i++) {
       nn[i] = { sa[i], i+k<n ? sa[i+k] : 0, i };
+      // nn[i] = { sa[i], sa[(i+k)%n], i }; // alternative to sort cyclic shifts
     }
 
     radixSort(nn.begin(), nn.end());
