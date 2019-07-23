@@ -2,7 +2,7 @@
 #include <vector>
 
 //
-// TODO: Implement lazy propagation
+// TO DONE (in another segtree implementation) : Implement lazy propagation
 //
 
 // Sum Segment Tree

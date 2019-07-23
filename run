@@ -1,0 +1,8 @@
+#!bash
+if [ "$2" = ""  ]
+then 
+  g++ -Wl,--stack -Wl,52000000 $1.cpp -o out.exe -std=c++17 -g -Wall -Ibits -DDEBUG
+  # g++ $1.cpp -o out.exe -std=c++17 -g -Wall -Ibits -DDEBUG
+fi
+./out < input.txt
+# bash -c "time ./out < input.txt"

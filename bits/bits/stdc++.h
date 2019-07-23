@@ -12,6 +12,7 @@
 #include <ios>
 #include <iterator>
 #include <set>
+#include <functional>
 
 #if __cplusplus >= 201103L
 #include <chrono>
