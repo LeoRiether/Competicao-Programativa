@@ -1,154 +1,199 @@
-#include <iostream>
-#include <memory>
-#include <ctime>
-#include <cstdlib>
-#include <queue>
-#include <tuple>
-#include <set>
+// answer to https://codeforces.com/problemset/problem/1011/E
 
-//
-// TODO: an actually good implementation
-//
+#include <bits/stdc++.h>
+using namespace std;
 
-// Another TODO: Search doesn't work
-// I hate shared pointers
+using ii = pair<int,int>;
+#ifndef DEBUG
+#define endl '\n'
+#define debugf(...)
+#define debug(...)
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+#else
+#define debugf(...) printf(__VA_ARGS__)
+#define debug(...) __VA_ARGS__
+mt19937 rng('m'+'e'+'r'+'r'+'y' + 'c'+'h'+'r'+'i'+'s'+'t'+'m'+'a'+'s');
+#endif
+const int N = 300005;
 
-int max(int a, int b) {
-  return a > b ? a : b;
+int cnt[N], f[N], sz[N], X[N], Y[N], L[N], R[N], tsz = 0;
+
+map<int, int> howmany;
+
+void fix(int u) {
+    if (!u) return;
+
+    sz[u] = sz[L[u]] + 1 + sz[R[u]];
+    cnt[u] = cnt[L[u]] + f[u] + cnt[R[u]];
 }
 
-struct Node {
-  int value;
-  int rank;
-
-  Node(int v, int r) : value(v), rank(r) { }
-  Node(int v) : value(v) { rank = rand(); }
-  Node() : value(0), rank(0) {}
-};
-
-// meh
-#define pTreap std::shared_ptr<Treap>
-using std::make_shared;
-
-class Treap {
-private:
-  pTreap left, right;
-
-  static pTreap rotateRight(pTreap t) {
-    pTreap x = t->left;
-    t->left = x->right;
-    x->right = t;
-    t->depth = max(t->left ? t->left->depth : 0, t->right ? t->right->depth : 0) + 1;
-    return x;
-  }
-
-  static pTreap rotateLeft(pTreap t) {
-    pTreap x = t->right;
-    t->right = x->left;
-    x->left = t;
-    t->depth = max(t->left ? t->left->depth : 0, t->right ? t->right->depth : 0) + 1;
-    return x;
-  }
-
-public:
-  int depth;
-  Node node;
-
-  Treap(Node& n) : node(n) { }
-  Treap(Node&& n) : node(std::move(n)) {
-    n = {};
-  }
-  Treap() { }
-
-  Treap* Search(int v) {
-    auto t = this;
-    for (;;) {
-      if (!t) return nullptr;
-
-      if (v == t->node.value)
-        return t;
-      if (v < t->node.value)
-        t = t->left.get();
-      if (v > t->node.value)
-        t = t->right.get();
-    }
-  }
-
-  static pTreap Insert(pTreap& t, Node& n)  {
-    if (!t) {
-      t = make_shared<Treap>(n);
-      t->depth = 1;
-      return t;
-    }
-
-    if (n.value < t->node.value) {
-      t->left = Treap::Insert(t->left, n);
-
-      if (t->left->node.rank > t->node.rank)
-        t = Treap::rotateRight(t);
-    } else if (n.value > t->node.value) {
-      t->right = Treap::Insert(t->right, n);
-
-      if (t->right->node.rank > t->node.rank)
-        t = Treap::rotateLeft(t);
-    }
-    t->depth = max(t->left ? t->left->depth : 0, t->right ? t->right->depth : 0) + 1;
-    return t;
-  }
-
-  static pTreap Insert(pTreap& t, Node&& n) {
-    return Treap::Insert(t, n);
-  }
-
-  void InorderPrint() {
-    if (left) left->InorderPrint();
-    std::cout << node.value << ' ';
-    if (right) right->InorderPrint();
-  }
-
-  void TreePrint() {
-    std::queue<std::pair<Treap*, int>> q;
-    q.emplace(this, 0);
-    int lastD = 0;
-    Treap* t; int d;
-    while (!q.empty()) {
-      std::tie(t, d) = q.front(); q.pop();
-      if (d != lastD)
-        std::cout << std::endl;
-      lastD = d;
-
-      if (!t) {
-        std::cout << ". ";
-      } else {
-        std::cout << t->node.value << ' ';
-        q.emplace(t->left.get(), d+1);
-        q.emplace(t->right.get(), d+1);
-      }
-    }
-  }
-};
-
-int main() {
-  srand(time(NULL));
-
-  pTreap t;
-  for (int i = 0; i < 100; i++)
-    Treap::Insert(t, { i });
-
-  // t->InorderPrint();
-  t->TreePrint();
-  std::cout << std::endl;
-
-  std::cout << "Treap height: " << t->depth << std::endl;
-
-  int x;
-  std::cout << "Query: ";
-  while (std::cin >> x) {
-    Treap* q = t->Search(x);
-    std::cout << "Node value: " << q->node.value << ". Rank: " << q->node.rank << ". Depth: " << q->depth << std::endl;
-    std::cout << "Query: ";
-    std::cin >> x;
-  }
-
-  return 0;
+void build() {
+    for (int i = 1; i < N; i++)
+        Y[i] = i;
+    shuffle(Y+1, Y+N, rng);
 }
+
+// [<=x, >x)
+ii split(int u, int x) {
+    if (!u) return {0, 0};
+
+    int l, r;
+    if (X[u] <= x) {
+        tie(l, r) = split(R[u], x);
+        R[u] = l;
+        fix(u);
+        return { u, r };
+    } else {
+        tie(l, r) = split(L[u], x);
+        L[u] = r;
+        fix(u);
+        return { l, u };
+    }
+}
+
+// root = meld(l, r);
+int meld(int l, int r) {
+    int u;
+    if (!l || !r) {
+        u = l ? l : r;
+    } else if (Y[l] < Y[r]) {
+        u = l;
+        R[u] = meld(R[u], r);
+    } else {
+        u = r;
+        L[u] = meld(l, L[u]);
+    }
+
+    fix(u);
+    return u;
+}
+
+int _insert(int u, int v) {
+    if (!u) return v;
+
+    if (Y[v] < Y[u]) {
+        int l, r;
+        tie(l, r) = split(u, X[v]);
+        L[v] = l;
+        R[v] = r;
+        u = v;
+    } else {
+        if (X[v] <= X[u]) L[u] = _insert(L[u], v);
+        else R[u] = _insert(R[u], v);
+    }
+
+    fix(u);
+    return u;
+}
+
+// howmany[x] should be > 0 before calling this function
+void inc(int u, int x) {
+    if (x < X[u]) {
+        inc(L[u], x);
+    } else if (x > X[u]) {
+        inc(R[u], x);
+    } else {
+        f[u]++;
+    }
+
+    fix(u);
+}
+
+void insert(int& u, int x) {
+    if (howmany[x] > 0) {
+        inc(u, x);
+        return;
+    }
+
+    howmany[x]++;
+
+    int v = ++tsz;
+    X[v] = x;
+    cnt[v] = 1;
+    f[v] = 1;
+    sz[v] = 1;
+    L[v] = 0;
+    R[v] = 0;
+    u = _insert(u, v);
+}
+
+void inorder(int u) {
+    if (!u) return;
+
+    inorder(L[u]);
+    printf("<%d:%d> ", X[u], f[u]);
+    inorder(R[u]);
+}
+
+void preorder(int u) {
+    printf("(");
+    if (u) {
+        printf("<%d/%d> ", X[u], Y[u]);
+        preorder(L[u]);
+        printf(" ");
+        preorder(R[u]);
+    }
+    printf(")");
+}
+
+int kth_smallest(int u, int k) {
+    while (u) {
+        if (k > cnt[u]) return -1;
+
+        if (k <= cnt[L[u]] + f[u] && k > cnt[L[u]]) return X[u];
+
+        if (cnt[L[u]] >= k) {
+            u = L[u];
+        } else {
+            k -= cnt[L[u]] + f[u];
+            u = R[u];
+        }
+    }
+
+    return -1;
+}
+
+int32_t (((((main)))))() <%
+    ios_base::sync_with_stdio(false);
+    cin.tie(0); cout.tie(0);
+
+    build();
+
+    int n, q;
+    cin >> n >> q;
+
+    int root = 0;
+
+    {
+        for (int i = 0; i < n; i++) {
+            int x; cin >> x;
+            insert(root, x);
+        }
+    }
+
+    // Answer queries
+    int l, r;
+    while (q--) {
+        int t, x;
+        cin >> t >> x;
+
+        if (t == 1) {
+            tie(l, r) = split(root, x);
+            int add = cnt[l];
+            root = meld(l, r);
+            insert(root, x + add);
+        } else if (t == 2) {
+            tie(l, r) = split(root, x);
+            cout << cnt[l] << endl;
+            root = meld(l, r);
+        } else {
+            int ans = kth_smallest(root, x);
+            if (ans == -1) cout << "invalid" << endl;
+            else cout << ans << endl;
+        }
+
+        // inorder(root);
+    }
+
+    return 0;
+%>

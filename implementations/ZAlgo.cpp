@@ -7,38 +7,6 @@ using namespace std;
 
 using vi = vector<int>;
 
-// Each element a_i of the Z-array is the length of the 
-// longest prefix of P starting at i
-vi Z_legacy(string P) {
-  vi z(P.size());
-  int l = 0, r = 0;
-  int size = P.size();
-  for (int i = 1; i < size; i++) {
-    if (i + z[i-l] < r) {
-      z[i] = z[i-l];
-    } else {
-      while (i + z[i] < size && P[i+z[i]] == P[z[i]])
-        z[i]++;
-      l = i;
-      r = i+z[i];
-    }
-  }
-  return z;
-}
-
-vi Z(string P) {
-  int n = P.size();
-  vi z(n);
-  int x = 0, y = 0;
-  for (int i = 1; i < n; i++) {
-    z[i] = i+z[i-x] < y ? z[i-x] : 0;
-    while (i+z[i] < n && P[z[i]] == P[i+z[i]]) {
-      x = i; y = i+z[i]; z[i]++; // y = i + z[x = i]++;
-    }
-  }
-  return z;
-}
-
 vi Z_handbook(string s) {
   int n = s.size();
   vi z(n);
