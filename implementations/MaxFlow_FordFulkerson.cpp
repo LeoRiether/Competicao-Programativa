@@ -1,4 +1,4 @@
-// Not tested!
+// doesn't even compile!
 
 struct MF {
     bitset<N> seen;

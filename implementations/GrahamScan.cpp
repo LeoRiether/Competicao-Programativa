@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <stack>
 
+// TODO: implement the faster Andrew's Monotone Chain algorithm
+
 constexpr int oo = 0x3f3f3f3f;
 
 enum class Orientation {
@@ -28,6 +30,7 @@ public:
   }
 
   // Returns the orientation of the ordered triplet (q,p,r)
+  // Probably wrong? I don't even know anymore
   static inline Orientation Orientation(const Point& q, const Point& p, const Point& r) {
     Point a = q-p, b = r-q;
     return getOrientation(a.cross(b));

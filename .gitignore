@@ -2,8 +2,12 @@
 .vscode
 
 # Stuff
-input.txt
-/ignore
+inp
+out.*
+err
+x/
+rust/
+other/
 
 # Prerequisites
 *.d

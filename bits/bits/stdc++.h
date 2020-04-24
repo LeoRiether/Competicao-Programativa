@@ -13,6 +13,7 @@
 #include <iterator>
 #include <set>
 #include <functional>
+#include <cassert>
 
 #if __cplusplus >= 201103L
 #include <chrono>
