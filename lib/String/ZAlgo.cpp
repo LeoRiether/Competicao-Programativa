@@ -7,9 +7,9 @@ using namespace std;
 
 using vi = vector<int>;
 
-vi Z_handbook(string s) {
+vector<int> Z_handbook(string s) {
   int n = s.size();
-  vi z(n);
+  vector<int> z(n);
   int x = 0, y = 0;
   for (int i = 1; i < n; i++) {
     z[i] = max(0, min(z[i - x], y - i + 1));
@@ -33,7 +33,7 @@ int main() {
   for (const char c : P)
     cout << ' ' << c << ' ';
   cout << endl;
-  
+
   vi z = Z(P);
   for (const int i : z)
     cout << setw(2) << i << ' ';
@@ -47,7 +47,7 @@ int main() {
   for (const char c : PS)
     cout << ' ' << c << ' ';
   cout << endl;
-  
+
   z = Z(PS);
   for (const int i : z)
     cout << setw(2) << i << ' ';
