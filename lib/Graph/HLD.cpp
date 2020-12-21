@@ -1,6 +1,6 @@
 #include <bits/stdc++.h>
 
-// 
+//
 // ~~Copied~~ Inspired by: https://github.com/joseleite19/icpc-notebook/blob/master/code/ed/hld.cpp
 // Best implementation of HLD I've seen.
 // It's pretty damn clever

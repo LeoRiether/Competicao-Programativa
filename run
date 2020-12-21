@@ -1,8 +1,15 @@
+#! /bin/bash
 #!bash
 if [ "$2" = ""  ]
 then
-  g++ -Wl,--stack -Wl,52000000 x/$1.cpp -o out.exe -std=c++17 -g -Wall -Wno-parentheses -Ibits -DDEBUG
-  # g++ $1.cpp -o out.exe -std=c++17 -g -Wall -Ibits -DDEBUG
+  g++ \
+    -Wl,--stack -Wl,52000000 \
+    x/$1.cpp \
+    -o out.exe \
+    -std=c++17 \
+    -g \
+    -Wall -Wpedantic -Wextra -Wshadow -Wno-parentheses \
+    -Ibits \
+    -DDEBUG
 fi
 ./out < inp
-# bash -c "time ./out < inp"
