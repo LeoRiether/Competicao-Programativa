@@ -1,2 +1,0 @@
-#! bash
-nim cpp -d:DEBUG --nimcache:./nimcache -r ./main.nim

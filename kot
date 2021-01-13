@@ -1,7 +1,0 @@
-#! bash
-if [ "$1" = "" ]
-then
-    kotlinc x/kot.kt && kotlin KotKt < inp
-else
-    kotlin KotKt
-fi

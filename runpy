@@ -1,6 +1,0 @@
-#!bash
-if [ "$2" = ""  ]
-then 
-  g++ $1.cpp -o out.exe -std=c++17 -g -Wall -Ibits -DDEBUG
-fi
-python36 input.py | ./out
