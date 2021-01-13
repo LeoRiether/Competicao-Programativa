@@ -3,7 +3,6 @@
 
 # Stuff
 inp
-out.*
 err
 x/
 rust/
@@ -41,3 +40,4 @@ other/
 *.exe
 *.out
 *.app
+out.*
