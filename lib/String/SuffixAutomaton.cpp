@@ -7,6 +7,20 @@
 // every distinct substring corresponds to exactly one *path* in the automaton
 // every suffix corresponds to a path ending in a terminal node
 
+// for (int u : reverse(nodes))
+// often comes in handy
+template <typename T> class rev {
+  private:
+    T &iterable_;
+
+  public:
+    explicit rev(T &iterable) : iterable_{iterable} {}
+    auto begin() const { return std::rbegin(iterable_); }
+    auto end() const { return std::rend(iterable_); }
+};
+
+//
+
 const int SA = 2 * N;
 const int Initial = 1;
 
@@ -66,7 +80,7 @@ void push(char c) {
 ///
 
 // Node 1 is the initial node of the automaton
-const SA = 2 * N;
+const int SA = 2 * N;
 int last = 1;
 int len[SA], link[SA];
 array<int, 26> to[SA];
