@@ -1,15 +1,41 @@
 #! /bin/bash
 #!bash
-if [ "$2" = ""  ]
+if [ "$2" = "A" ]
 then
   g++ \
-    -Wl,--stack -Wl,52000000 \
     x/$1.cpp \
-    -o out.exe \
+    -o ../brutus/A \
     -std=c++17 \
     -g \
     -Wall -Wpedantic -Wextra -Wshadow -Wno-parentheses \
-    -Ibits \
-    -DDEBUG
+    -Ibits -Itestlib -Iatcoder
 fi
+if [ "$2" = "B" ]
+then
+  g++ \
+    x/$1.cpp \
+    -o ../brutus/B \
+    -std=c++17 \
+    -g \
+    -Wall -Wpedantic -Wextra -Wshadow -Wno-parentheses \
+    -Ibits -Itestlib -Iatcoder
+fi
+
+if [ "$2" = ""  ]
+then
+  g++ \
+    x/$1.cpp \
+    -o out \
+    -std=c++17 \
+    -g \
+    -Wall -Wpedantic -Wextra -Wshadow -Wno-parentheses -Wno-unused-const-variable \
+	-Wno-unused-variable \
+    -fsanitize=address \
+    -Ibits -Itestlib -Iatcoder \
+    -DDEBUG
+
+    # -Wl,--stack -Wl,52000000 \
+fi
+
 ./out < inp
+
