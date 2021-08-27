@@ -2,11 +2,12 @@
 .vscode
 
 # Stuff
-inp
+# inp
+# x/
 err
-x/
-rust/
+rust/target
 other/
+kotlin/
 
 # Prerequisites
 *.d
@@ -40,4 +41,13 @@ other/
 *.exe
 *.out
 *.app
+out
 out.*
+
+.fake
+.ionide
+
+fsharp/obj
+
+# testlib (https://github.com/MikeMirzayanov/testlib)
+testlib/

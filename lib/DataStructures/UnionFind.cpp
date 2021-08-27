@@ -1,6 +1,6 @@
 int P[N], S[N];
 void Build() {
-    fo1(i, N)
+	for (int i = 0; i < N; i++)
         P[i] = i, S[i] = 1;
 }
 
