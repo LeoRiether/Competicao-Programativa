@@ -1,6 +1,17 @@
 // Slight modification of https://github.com/mrsac7/CSES-Solutions/blob/master/src/2110%20-%20Substring%20Distribution.cpp
 // Very nice implementation
 int sa[N], rnk[N], tmp[N], lcp[N];
+
+void build_lcp(const string& s) {
+	int n = s.size();
+    for (int i = 0, k = 0; i < n; i++) if (rnk[i] != n-1) {
+        int j = sa[rnk[i] + 1];
+        while (s[i + k] == s[j + k])
+            k++;
+        lcp[rnk[i]] = k;
+        if (k) k--;
+    }
+}
  
 void suffix_array(const string& s) {
 	int n = s.size();
@@ -25,17 +36,7 @@ void suffix_array(const string& s) {
         if (tmp[n - 1] == n - 1)
             break;
     }
-}
- 
-void build_lcp(const string& s) {
-	int n = s.size();
-    for (int i = 0, k = 0; i < n; i++) if (rnk[i] != n-1) {
-        int j = sa[rnk[i] + 1];
-        while (s[i + k] == s[j + k])
-            k++;
-        lcp[rnk[i]] = k;
-        if (k) k--;
-    }
+	build_lcp(s);
 }
 
 void print(const string& s) {
