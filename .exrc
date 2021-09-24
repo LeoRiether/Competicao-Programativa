@@ -2,13 +2,16 @@
 " vim bindings for competitive programming
 "
 
+" change all
+map <leader>ca ggcG
+
 function Template()
 	silent execute "! cp " . "x/template." . expand('%:e') . " " . @%
 	edit
 	redraw!
 
 	execute "normal! gg"
-	0r checklist.txt
+	" 0r checklist.txt
 endfunction
 command! Template call Template()
 
