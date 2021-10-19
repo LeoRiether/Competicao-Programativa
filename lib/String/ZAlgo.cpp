@@ -7,7 +7,7 @@ using namespace std;
 
 using vi = vector<int>;
 
-vector<int> Z_handbook(string s) {
+vector<int> Z(string s) {
   int n = s.size();
   vector<int> z(n);
   int x = 0, y = 0;

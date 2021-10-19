@@ -12,7 +12,7 @@ void build_lcp(const string& s) {
         if (k) k--;
     }
 }
- 
+
 void suffix_array(const string& s) {
 	int n = s.size();
 	int gap;
