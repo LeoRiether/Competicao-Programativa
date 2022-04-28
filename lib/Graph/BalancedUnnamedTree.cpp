@@ -1,6 +1,8 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+// solves https://codeforces.com/problemset/problem/527/C
+
 #define W(x) cerr << "\033[31m" << #x << " = " << x << "\033[0m" << endl;
 #define fo1(i, n) for (int i = 0; i < (n); i++)
 #define rep(i, l, r) for (int i = l; i < r; i++)

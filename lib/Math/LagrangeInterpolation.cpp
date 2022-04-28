@@ -13,6 +13,7 @@ struct Lagrange {
 	}
 
 	T eval(T x) {
+		assert(x.x < mod); //! remember to mod x before using
 		l[0] = 1;
 		for (int i = 1; i < n; i++)
 			l[i] = l[i-1] * (x -T(i-1));

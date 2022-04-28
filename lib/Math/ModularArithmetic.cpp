@@ -15,7 +15,9 @@ struct mint {
 };
 
 mint fac[N], ifac[N];
+bool built_ncr = false;
 void build_ncr() {
+	built_ncr = true;
 	fac[0] = 1;
 	for (int i = 1; i < N; i++)
 		fac[i] = fac[i-1] * i;
@@ -24,6 +26,7 @@ void build_ncr() {
 		ifac[i] = ifac[i+1] * (i+1);
 }
 mint ncr(int n, int r) {
+	assert(built_ncr);
     if (n - r < 0) return 0;
 	return fac[n] * ifac[r] * ifac[n - r];
 }

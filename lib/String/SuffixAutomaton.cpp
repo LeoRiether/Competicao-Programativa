@@ -86,7 +86,7 @@ int len[SA], link[SA];
 array<int, 26> to[SA];
 int lastID = 1;
 
-void add(int c) {
+void push(int c) {
     int u = ++lastID;
     len[u] = len[last] + 1;
 

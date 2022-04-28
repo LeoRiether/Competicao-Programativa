@@ -28,8 +28,7 @@ void fix(int u) {
 }
 
 void build() {
-    for (int i = 1; i < N; i++)
-        Y[i] = i;
+    iota(Y+1, Y+N, 1);
     shuffle(Y+1, Y+N, rng);
 }
 
