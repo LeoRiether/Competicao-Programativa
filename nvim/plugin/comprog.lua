@@ -7,6 +7,7 @@ vim.g.loaded_comprog = 1
 
 if not vim.fn.getcwd():match('/comprog') then return end
 
+-- :Input
 local function write(filename, content)
     local file = io.open(filename, "w")
     file:write(content)
@@ -37,6 +38,20 @@ local function input(param)
 end
 
 vim.api.nvim_create_user_command('Input', input, { nargs=1 })
+
+-- :Lib
+local function lib_copy()
+    vim.fn['fzf#run'](vim.fn['fzf#wrap']({
+        source = 'rg lib/ --files',
+        sink = 'read',
+        options = {
+            '--prompt', 'Lib> ',
+            '--preview', '~/.vim/plugged/fzf.vim/bin/preview.sh {}',
+        },
+    }))
+end
+
+vim.api.nvim_create_user_command('Lib', lib_copy, {})
 
 -- old .exrc
 vim.cmd([[
