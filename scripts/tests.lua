@@ -1,6 +1,6 @@
 local inputfile = 'inp'
 local executable = 'out'
-local separator = ';'
+local separator = '---'
 
 local function read_testcases()
     local res = {}
@@ -52,3 +52,4 @@ function main()
 end
 
 main()
+

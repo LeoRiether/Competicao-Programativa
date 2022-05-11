@@ -1,13 +1,18 @@
-# VSCode
-.vscode
-
 # Stuff
-# inp
-# x/
+inp
+x/
 err
 rust/target
 other/
 kotlin/
+meta.wiki
+checklist.txt
+atcoder/
+Session.vim
+.testcase.*
+
+# VSCode
+.vscode
 
 # Prerequisites
 *.d

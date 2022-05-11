@@ -17,17 +17,24 @@ function Template()
 endfunction
 command! Template call Template()
 
-" ./run 1
-autocmd filetype cpp  command! -nargs=+ Run execute "!./run " . <args>
 autocmd filetype cpp  command! Comp execute "!./comp " . @%
+
+command! Test execute "!./test"
+nnoremap - 35a-<esc>
 
 if has('nvim')
 	autocmd filetype cpp  command! Out split term://./out
-    command! Test split term://./test
 else
 	autocmd filetype cpp  command! Out execute "!./out"
-    command! Test execute "!./test"
 endif
+
+" ./run 1
+" autocmd filetype cpp  command! -nargs=+ Run execute "!./run " . <args>
+function Run()
+    Comp
+    Test
+endfunction
+autocmd filetype cpp  command! Run call Run()
 
 " Debug template
 iabbr __debug 
@@ -40,4 +47,3 @@ iabbr __debug
 			\<cr>#define judge(...) __VA_ARGS__
 			\<cr>#endif
 			\<cr>#define debugf(...) debug(printf(__VA_ARGS__))
-
