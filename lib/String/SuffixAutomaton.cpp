@@ -19,67 +19,6 @@ template <typename T> class rev {
     auto end() const { return std::rend(iterable_); }
 };
 
-//
-
-const int SA = 2 * N;
-const int Initial = 1;
-
-int curLast = Initial, ID = Initial;
-int len[SA], link[SA];
-map<char, int> nxt[SA];
-
-void push(char c) {
-    int u = ++ID;
-    len[u] = len[curLast] + 1;
-
-    int p = curLast;
-
-    // traverse suffixes of the string
-    while (p && !nxt[p].count(c)) {
-        nxt[p][c] = u;
-        p = link[p];
-    }
-
-    if (!p) {
-        // first time `c` has been added
-        link[u] = Initial;
-    } else {
-        // some string x + c has already been added to the automaton!
-        int q = nxt[p][c];
-
-        if (len[q] == len[p] + 1) {
-            // a node corresponding to x + c exists! (continous case)
-            link[u] = q;
-        } else {
-            // discontinuous case
-            int clone = ++ID;
-            link[clone] = link[q];
-            nxt[clone] = nxt[q];
-            len[clone] = len[p] + 1;
-
-            while (p && nxt[p][c] == q) {
-                nxt[p][c] = clone;
-                p = link[p];
-            }
-
-            link[u] = link[q] = clone;
-        }
-    }
-
-    curLast = u;
-}
-
-
-
-
-
-///
-/// Second version because ¯\_(ツ)_/¯
-/// Tested on https://codeforces.com/gym/305539/problem/G
-/// Uses O(N × A) memory
-///
-
-// Node 1 is the initial node of the automaton
 const int SA = 2 * N;
 int last = 1;
 int len[SA], link[SA];

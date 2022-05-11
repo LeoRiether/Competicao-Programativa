@@ -131,19 +131,3 @@ vector<int> buildSuffixArray(string& s) {
 
   return sa;
 }
-
-int main() {
-  string s; cin >> s;
-
-  vector<int> sa = buildSuffixArray(s);
-
-  for (const auto c : s)
-    cout << "  " << c;
-  cout << endl;
-
-  for (const auto i : sa)
-    cout << setw(3) << i;
-  cout << endl;
-
-  return 0;
-}
