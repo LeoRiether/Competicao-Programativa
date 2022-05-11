@@ -7,6 +7,18 @@ vim.g.loaded_comprog = 1
 
 if not vim.fn.getcwd():match('/comprog') then return end
 
+-- Keymaps
+local map = vim.api.nvim_set_keymap
+local function lmap(lhs, rhs) -- leader map
+    map('n', '<leader>'..lhs, rhs, {noremap=true})
+end
+
+lmap('comp', ':Comp<cr>')
+lmap('test', ':Test<cr>')
+lmap('run', ':Run<cr>')
+lmap('lib', ':Lib<cr>')
+lmap('tem', ':Template<cr>')
+
 -- :Input
 local function write(filename, content)
     local file = io.open(filename, "w")
@@ -41,14 +53,11 @@ vim.api.nvim_create_user_command('Input', input, { nargs=1 })
 
 -- :Lib
 local function lib_copy()
-    vim.fn['fzf#run'](vim.fn['fzf#wrap']({
+    vim.fn['fzf#run'](vim.fn['fzf#wrap'](vim.fn['fzf#vim#with_preview']({
         source = 'rg lib/ --files',
         sink = 'read',
-        options = {
-            '--prompt', 'Lib> ',
-            '--preview', '~/.vim/plugged/fzf.vim/bin/preview.sh {}',
-        },
-    }))
+        options = { '--prompt', 'Lib> ', },
+    })))
 end
 
 vim.api.nvim_create_user_command('Lib', lib_copy, {})
