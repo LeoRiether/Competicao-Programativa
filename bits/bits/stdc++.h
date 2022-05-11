@@ -14,6 +14,8 @@
 #include <set>
 #include <functional>
 #include <cassert>
+#include <unordered_set>
+#include <unordered_map>
 
 #if __cplusplus >= 201103L
 #include <chrono>
