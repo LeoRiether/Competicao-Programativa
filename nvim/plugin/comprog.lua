@@ -64,17 +64,11 @@ vim.api.nvim_create_user_command('Lib', lib_copy, {})
 
 -- old .exrc
 vim.cmd([[
-    " change all
-    map <leader>ca gg"_cG
-
     function Template()
-        " silent execute '! cp ' . 'x/template.' . expand('%:e') . ' ' . @%
         normal! ggdG
         silent execute "0r x/template." . expand('%:e')
-        " edit
         redraw!
-
-        execute "normal! gg"
+        normal! gg
         " 0r checklist.txt
     endfunction
     command! Template call Template()
