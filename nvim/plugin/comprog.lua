@@ -26,29 +26,69 @@ local function write(filename, content)
     file:close()
 end
 
-local function input(param)
-    local requests = require 'requests'
-
-    print("Getting testcases for <" .. param.args .. ">...")
-
-    local response = requests.get(param.args)
-    local body = response.text
-    if response.status_code ~= 200 then
-        write('inp', body)
+local function input(problem)
+    -- ensure we have a buffer called `inp` in the first place
+    if vim.fn.bufnr("inp") == -1 then
+        vim.api.nvim_err_writeln("comprog: inp buffer not found")
         return
     end
 
-    local regex = '<pre id="id%d+">(.*?)</pre>'
-    local testcases = {  }
-    for match in body:gmatch(regex) do
-        testcases[#testcases+1] = match
+    -- Format `inp`
+    local cases = {}
+    for _, test in pairs(problem.tests) do
+        cases[#cases+1] = test.input
     end
+    cases = table.concat(cases, string.rep('-' , 35) .. '\n')
+    local pad0 = (35 - #problem.name - 2 + 1) / 2
+    local pad1 = (35 - #problem.name - 2) / 2
+    if pad0 < 3 then pad0 = 3 end
+    local text = string.format('%s %s %s\n%s', string.rep('-', pad0), problem.name, string.rep('-', pad1), cases)
+    write('inp', text)
 
-    write('inp', table.concat(testcases, '\n-----------------------------------\n'))
-    write('del.html', body)
-    print("Done!")
+    -- reload the `inp` buffer, then go back to the original one
+    local cur_buf = vim.fn.bufnr("%")
+    vim.cmd('b inp | e | b ' .. cur_buf)
+
+    vim.api.nvim_out_write("Updated test cases\n")
 end
 
+-- :h tcp
+local function create_server(host, port, on_connect)
+    local server = vim.loop.new_tcp()
+    server:bind(host, port)
+    server:listen(128, function(err)
+        assert(not err, err)  -- Check for errors.
+        local sock = vim.loop.new_tcp()
+        server:accept(sock)  -- Accept client connection.
+        on_connect(sock)  -- Start reading messages.
+    end)
+    return server
+end
+
+local function start_competitive_companion_server()
+    create_server('127.0.0.1', 10043, function(sock)
+        local buffer = {}
+        sock:read_start(function(err, chunk)
+            assert(not err, err)  -- Check for errors.
+            if chunk then
+                buffer[#buffer+1] = chunk
+            else  -- EOF (stream closed).
+                local body = table.concat(buffer, "")
+                local idx = body:match("^.*()\r\n") -- copied from p00f/cphelper.nvim
+                if idx == nil then return end -- ensure the message is in the right format
+                body = body:sub(idx + 1)
+                vim.schedule(function()
+                    input(vim.json.decode(body))
+                end)
+
+                sock:close() -- Always close handles to avoid leaks.
+                buffer = {}
+            end
+        end)
+    end)
+end
+
+start_competitive_companion_server()
 vim.api.nvim_create_user_command('Input', input, { nargs=1 })
 
 -- :Lib

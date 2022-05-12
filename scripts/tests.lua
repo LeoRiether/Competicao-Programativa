@@ -8,7 +8,7 @@ local function read_testcases()
     for line in io.lines(inputfile) do
         if line:find("^" .. separator) ~= nil then
             -- Add testcase
-            if buf ~= nil then
+            if #buf > 0 then
                 res[#res + 1] = table.concat(buf, "\n")
                 buf = {}
             end
@@ -19,7 +19,7 @@ local function read_testcases()
     end
 
     -- Add last testcase
-    if buf ~= nil then
+    if #buf > 0 then
         res[#res + 1] = table.concat(buf, "\n")
     end
 
