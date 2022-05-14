@@ -1,6 +1,7 @@
 local inputfile = 'inp'
 local executable = 'out'
-local separator = '---'
+local separator = '%-%-%-' -- you should escape some stuff with % apparently
+                           -- https://riptutorial.com/lua/example/20535/string-find--introduction-
 
 local function read_testcases()
     local res = {}
