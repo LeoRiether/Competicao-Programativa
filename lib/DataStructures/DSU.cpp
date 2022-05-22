@@ -1,7 +1,7 @@
 int P[N], S[N];
 void Build() {
-	for (int i = 0; i < N; i++)
-        P[i] = i, S[i] = 1;
+    iota(P, P+N, 0);
+    fill(S, S+N, 1);
 }
 
 int Find(int i) {
