@@ -1,9 +1,9 @@
 struct mint {
 	int x;
 	mint(int _x = 0) : x(_x) { }
-	mint operator +(mint rhs) { return x + rhs.x >= mod ? x + rhs.x - mod : x + rhs.x; }
-	mint operator *(mint rhs) { return mint((ll)x * rhs.x % mod); }
-	mint operator -(mint rhs) { return *this + (mod - rhs.x); }
+	mint operator +(const mint rhs) const { return x + rhs.x >= mod ? x + rhs.x - mod : x + rhs.x; }
+	mint operator *(const mint rhs) const { return mint((ll)x * rhs.x % mod); }
+	mint operator -(const mint rhs) const { return *this + (mod - rhs.x); }
 	mint inv() { return this->pwr(mod - 2); }
 	mint pwr(ll e) {
 		mint t = x;
