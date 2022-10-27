@@ -1,0 +1,9 @@
+[submodule "3rdparty/tfg"]
+	path = 3rdparty/tfg
+	url = https://github.com/tfg50/Competitive-Programming
+[submodule "3rdparty/tiagodfs"]
+	path = 3rdparty/tiagodfs
+	url = https://github.com/Tiagosf00/Competitive-Programming
+[submodule "3rdparty/jose"]
+	path = 3rdparty/jose
+	url = https://github.com/joseleite19/icpc-notebook
