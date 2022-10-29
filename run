@@ -1,5 +1,4 @@
-#! /bin/bash
-#!bash
+#!/bin/bash
 if [ "$2" = "A" ]
 then
   g++ \
