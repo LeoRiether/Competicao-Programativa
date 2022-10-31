@@ -1,198 +1,130 @@
-// answer to https://codeforces.com/problemset/problem/1011/E
+const int N = 200005;
 
-#include <bits/stdc++.h>
-using namespace std;
+int tsz = 0;
+int X[N], Y[N], L[N], R[N], sz[N];
+bool flip[N];
 
-using ii = pair<int,int>;
-#ifndef DEBUG
-#define endl '\n'
-#define debugf(...)
-#define debug(...)
-mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
-#else
-#define debugf(...) printf(__VA_ARGS__)
-#define debug(...) __VA_ARGS__
-mt19937 rng('m'+'e'+'r'+'r'+'y' + 'c'+'h'+'r'+'i'+'s'+'t'+'m'+'a'+'s');
-#endif
-const int N = 300005;
-
-int cnt[N], f[N], sz[N], X[N], Y[N], L[N], R[N], tsz = 0;
-
-map<int, int> howmany;
-
-void fix(int u) {
-    if (!u) return;
-
-    sz[u] = sz[L[u]] + 1 + sz[R[u]];
-    cnt[u] = cnt[L[u]] + f[u] + cnt[R[u]];
-}
-
-void build() {
+//! Call this before anything else
+void Build() {
     iota(Y+1, Y+N, 1);
-    shuffle(Y+1, Y+N, rng);
+	shuffle(Y+1, Y+N, rng); // rng :: mt19937
 }
 
-// [<=x, >x)
-ii split(int u, int x) {
-    if (!u) return {0, 0};
+int new_node(int x) {
+	int u = ++tsz;
+	sz[u] = 1;
+	X[u] = x;
+	return u;
+}
 
-    int l, r;
-    if (X[u] <= x) {
-        tie(l, r) = split(R[u], x);
-        R[u] = l;
-        fix(u);
-        return { u, r };
-    } else {
-        tie(l, r) = split(L[u], x);
+void Push(int u) { // also known as unlaze
+	if (!u) return;
+	if (flip[u]) {
+		flip[u] = false;
+		flip[L[u]] ^= 1;
+		flip[R[u]] ^= 1;
+		swap(L[u], R[u]);
+	}
+}
+
+void Pull(int u) { // also known as fix
+	if (!u) return;
+	sz[u] = sz[L[u]] + 1 + sz[R[u]];
+}
+
+int Insert(int u, int node) {
+    Push(u);
+    if (!u) return node;
+    if (Y[node] < Y[u]) {
+        tie(L[node], R[node]) = SplitVal(u, X[node]);
+        u = node;
+    }
+    else if (X[node] < X[u]) L[u] = Insert(L[u], node);
+    else R[u] = Insert(R[u], node);
+    Pull(u);
+    return u;
+}
+
+int Find(int u, int x) {
+    return u == 0    ? 0 :
+           x == X[u] ? u :
+           x <  X[u] ? Find(L[u], x) :
+                       Find(R[u], x);
+}
+
+// root = Meld(l, r);
+int Meld(int l, int r) {
+	Push(l); Push(r);
+	int u;
+	if (!l || !r) {
+		u = l ? l : r;
+	} else if (Y[l] < Y[r]) {
+		u = l;
+		R[u] = Meld(R[u], r);
+	} else {
+		u = r;
+		L[u] = Meld(l, L[u]);
+	}
+	Pull(u);
+	return u;
+}
+
+void Free(int u) { /* node u can be deleted, maybe put in a pool of free IDs */ }
+
+int Erase(int u, int key) {
+    Push(u);
+    if (!u) return 0;
+    if (X[u] == key) {
+        int v = Meld(L[u], R[u]);
+        Free(u);
+        u = v; 
+    } else u = Erase(key < X[u] ? L[u] : R[u], key);
+    Pull(u);
+    return u;
+}
+
+// (s elements, N - s elements)
+ii SplitSz(int u, int s) {
+	if (!u) return {0, 0};
+	Push(u);
+	if (sz[L[u]] >= s) {
+		auto [l, r] = SplitSz(L[u], s);
+		L[u] = r;
+		Pull(u);
+		return { l, u };
+	} else {
+		auto [l, r] = SplitSz(R[u], s - sz[L[u]] - 1);
+		R[u] = l;
+		Pull(u);
+		return { u, r };
+	}
+}
+
+// (<= x, > x)
+ii SplitVal(int u, int x) {
+	if (!u) return {0, 0};
+	Push(u);
+	if (X[u] > x) {
+		auto [l, r] = SplitVal(L[u], x);
         L[u] = r;
-        fix(u);
-        return { l, u };
-    }
-}
-
-// root = meld(l, r);
-int meld(int l, int r) {
-    int u;
-    if (!l || !r) {
-        u = l ? l : r;
-    } else if (Y[l] < Y[r]) {
-        u = l;
-        R[u] = meld(R[u], r);
-    } else {
-        u = r;
-        L[u] = meld(l, L[u]);
-    }
-
-    fix(u);
-    return u;
-}
-
-int _insert(int u, int v) {
-    if (!u) return v;
-
-    if (Y[v] < Y[u]) {
-        int l, r;
-        tie(l, r) = split(u, X[v]);
-        L[v] = l;
-        R[v] = r;
-        u = v;
-    } else {
-        if (X[v] <= X[u]) L[u] = _insert(L[u], v);
-        else R[u] = _insert(R[u], v);
-    }
-
-    fix(u);
-    return u;
-}
-
-// howmany[x] should be > 0 before calling this function
-void inc(int u, int x) {
-    if (x < X[u]) {
-        inc(L[u], x);
-    } else if (x > X[u]) {
-        inc(R[u], x);
-    } else {
-        f[u]++;
-    }
-
-    fix(u);
-}
-
-void insert(int& u, int x) {
-    if (howmany[x] > 0) {
-        inc(u, x);
-        return;
-    }
-
-    howmany[x]++;
-
-    int v = ++tsz;
-    X[v] = x;
-    cnt[v] = 1;
-    f[v] = 1;
-    sz[v] = 1;
-    L[v] = 0;
-    R[v] = 0;
-    u = _insert(u, v);
-}
-
-void inorder(int u) {
-    if (!u) return;
-
-    inorder(L[u]);
-    printf("<%d:%d> ", X[u], f[u]);
-    inorder(R[u]);
+		Pull(u);
+		return { l, u };
+	} else {
+		auto [l, r] = SplitVal(R[u], x);
+        R[u] = l;
+		Pull(u);
+		return { u, r };
+	}
 }
 
 void preorder(int u) {
-    printf("(");
-    if (u) {
-        printf("<%d/%d> ", X[u], Y[u]);
-        preorder(L[u]);
-        printf(" ");
-        preorder(R[u]);
-    }
-    printf(")");
+	cout << "(";
+	if (u) {
+		cout << X[u] << ' ';
+		preorder(L[u]);
+		cout << ' ';
+		preorder(R[u]);
+	}
+	cout << ")";
 }
 
-int kth_smallest(int u, int k) {
-    while (u) {
-        if (k > cnt[u]) return -1;
-
-        if (k <= cnt[L[u]] + f[u] && k > cnt[L[u]]) return X[u];
-
-        if (cnt[L[u]] >= k) {
-            u = L[u];
-        } else {
-            k -= cnt[L[u]] + f[u];
-            u = R[u];
-        }
-    }
-
-    return -1;
-}
-
-int32_t (((((main)))))() <%
-    ios_base::sync_with_stdio(false);
-    cin.tie(0); cout.tie(0);
-
-    build();
-
-    int n, q;
-    cin >> n >> q;
-
-    int root = 0;
-
-    {
-        for (int i = 0; i < n; i++) {
-            int x; cin >> x;
-            insert(root, x);
-        }
-    }
-
-    // Answer queries
-    int l, r;
-    while (q--) {
-        int t, x;
-        cin >> t >> x;
-
-        if (t == 1) {
-            tie(l, r) = split(root, x);
-            int add = cnt[l];
-            root = meld(l, r);
-            insert(root, x + add);
-        } else if (t == 2) {
-            tie(l, r) = split(root, x);
-            cout << cnt[l] << endl;
-            root = meld(l, r);
-        } else {
-            int ans = kth_smallest(root, x);
-            if (ans == -1) cout << "invalid" << endl;
-            else cout << ans << endl;
-        }
-
-        // inorder(root);
-    }
-
-    return 0;
-%>
