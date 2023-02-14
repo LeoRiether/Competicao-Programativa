@@ -7,3 +7,6 @@
 [submodule "3rdparty/jose"]
 	path = 3rdparty/jose
 	url = https://github.com/joseleite19/icpc-notebook
+[submodule "3rdparty/brunomaletta"]
+	path = 3rdparty/brunomaletta
+	url = https://github.com/brunomaletta/Biblioteca.git

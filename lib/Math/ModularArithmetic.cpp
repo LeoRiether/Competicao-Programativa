@@ -1,3 +1,5 @@
+const int mod = ;
+using ll = long long;
 struct mint {
 	int x;
 	mint(int _x = 0) : x(_x) { }

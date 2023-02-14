@@ -4,7 +4,7 @@ then
   g++ \
     x/$1.cpp \
     -o ../brutus/A \
-    -std=c++17 \
+    -std=c++20 \
     -g \
     -Wall -Wpedantic -Wextra -Wshadow -Wno-parentheses \
     -Ibits -Itestlib -Iatcoder
@@ -14,7 +14,7 @@ then
   g++ \
     x/$1.cpp \
     -o ../brutus/B \
-    -std=c++17 \
+    -std=c++20 \
     -g \
     -Wall -Wpedantic -Wextra -Wshadow -Wno-parentheses \
     -Ibits -Itestlib -Iatcoder
@@ -25,13 +25,14 @@ then
   g++ \
     x/$1.cpp \
     -o out \
-    -std=c++17 \
+    -std=c++20 \
     -g \
     -Wall -Wpedantic -Wextra -Wshadow -Wno-parentheses -Wno-unused-const-variable \
 	-Wno-unused-variable \
     -fsanitize=address,undefined \
     -Ibits -Itestlib -Iatcoder \
-    -DDEBUG
+    -DDEBUG \
+    -O2
 
     # -Wl,--stack -Wl,52000000 \
 fi

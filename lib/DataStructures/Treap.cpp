@@ -32,26 +32,6 @@ void Pull(int u) { // also known as fix
 	sz[u] = sz[L[u]] + 1 + sz[R[u]];
 }
 
-int Insert(int u, int node) {
-    Push(u);
-    if (!u) return node;
-    if (Y[node] < Y[u]) {
-        tie(L[node], R[node]) = SplitVal(u, X[node]);
-        u = node;
-    }
-    else if (X[node] < X[u]) L[u] = Insert(L[u], node);
-    else R[u] = Insert(R[u], node);
-    Pull(u);
-    return u;
-}
-
-int Find(int u, int x) {
-    return u == 0    ? 0 :
-           x == X[u] ? u :
-           x <  X[u] ? Find(L[u], x) :
-                       Find(R[u], x);
-}
-
 // root = Meld(l, r);
 int Meld(int l, int r) {
 	Push(l); Push(r);
@@ -67,20 +47,6 @@ int Meld(int l, int r) {
 	}
 	Pull(u);
 	return u;
-}
-
-void Free(int u) { /* node u can be deleted, maybe put in a pool of free IDs */ }
-
-int Erase(int u, int key) {
-    Push(u);
-    if (!u) return 0;
-    if (X[u] == key) {
-        int v = Meld(L[u], R[u]);
-        Free(u);
-        u = v; 
-    } else u = Erase(key < X[u] ? L[u] : R[u], key);
-    Pull(u);
-    return u;
 }
 
 // (s elements, N - s elements)
@@ -116,6 +82,41 @@ ii SplitVal(int u, int x) {
 		return { u, r };
 	}
 }
+
+int Insert(int u, int node) {
+    Push(u);
+    if (!u) return node;
+    if (Y[node] < Y[u]) {
+        tie(L[node], R[node]) = SplitVal(u, X[node]);
+        u = node;
+    }
+    else if (X[node] < X[u]) L[u] = Insert(L[u], node);
+    else R[u] = Insert(R[u], node);
+    Pull(u);
+    return u;
+}
+
+int Find(int u, int x) {
+    return u == 0    ? 0 :
+           x == X[u] ? u :
+           x <  X[u] ? Find(L[u], x) :
+                       Find(R[u], x);
+}
+
+void Free(int u) { /* node u can be deleted, maybe put in a pool of free IDs */ }
+
+int Erase(int u, int key) {
+    Push(u);
+    if (!u) return 0;
+    if (X[u] == key) {
+        int v = Meld(L[u], R[u]);
+        Free(u);
+        u = v; 
+    } else u = Erase(key < X[u] ? L[u] : R[u], key);
+    Pull(u);
+    return u;
+}
+
 
 void preorder(int u) {
 	cout << "(";

@@ -1,10 +1,12 @@
-int id;
-const int B = N * 60; // Should be fine
-int X[B], L[B], R[B];
+int ID;
+const int Log = 18;
+const int B = N * Log + 4 * N;
+int L[B], R[B];
+using info = int; 
+info X[B];
 
-int n;
-int Build(int l=0, int r=n) {
-    int u = ++id;
+int Build(int l = 0, int r = N) {
+    int u = ++ID;
     if (r - l <= 1) {
         X[u] = 0;
         return u;
@@ -17,8 +19,8 @@ int Build(int l=0, int r=n) {
     return u;
 }
 
-int Add(int u, int pos, int value, int l=0, int r=n) {
-    int v = ++id;
+int Update(int u, int pos, info value, int l = 0, int r = N) {
+    int v = ++ID;
     if (r - l <= 1) {
         X[v] = X[u] + value;
         return v;
@@ -26,16 +28,16 @@ int Add(int u, int pos, int value, int l=0, int r=n) {
 
     int mid = (l + r) / 2;
     if (pos < mid)
-        L[v] = Add(L[u], pos, value, l, mid), R[v] = R[u];
+        L[v] = Update(L[u], pos, value, l, mid), R[v] = R[u];
     else
-        R[v] = Add(R[u], pos, value, mid, r), L[v] = L[u];
+        L[v] = L[u], R[v] = Update(R[u], pos, value, mid, r);
     X[v] = X[L[v]] + X[R[v]];
     return v;
 }
 
 // [l, r)
-int Query(int u, int tl, int tr, int l=0, int r=n) {
-    if (l >= tr || r <= tl || r-l <= 0)
+info Query(int u, int tl, int tr, int l = 0, int r = N) {
+    if (l >= tr || r <= tl || r - l <= 0)
         return 0;
 
     if (l >= tl && r <= tr)
@@ -45,12 +47,13 @@ int Query(int u, int tl, int tr, int l=0, int r=n) {
     return Query(L[u], tl, tr, l, mid) + Query(R[u], tl, tr, mid, r);
 }
 
-// -1 if there's no element in a position >=pos, otherwise the index of the lower bound
-int LowerBound(int u, int pos, int l=0, int r=n) {
+// -1 if there's no element in a position >=pos, otherwise the index of the
+// lower bound
+int LowerBound(int u, int pos, int l = 0, int r = N) {
     if (X[u] == 0 || r <= pos)
         return -1;
 
-    if (r-l <= 1)
+    if (r - l <= 1)
         return l;
 
     int mid = (l + r) / 2;
@@ -60,8 +63,8 @@ int LowerBound(int u, int pos, int l=0, int r=n) {
     return LowerBound(R[u], pos, mid, r); // not found in the left, let's try the right node
 }
 
-int Kth(int u, int k, int l=0, int r=n) {
-    while (r-l > 1) {
+int Kth(int u, int k, int l = 0, int r = N) {
+    while (r - l > 1) {
         int cnt = X[L[u]];
         int mid = (l + r) / 2;
         if (cnt >= k)
